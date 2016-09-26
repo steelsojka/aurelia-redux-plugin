@@ -1,0 +1,23 @@
+{
+  "name": "aurelia-redux-plugin",
+  "version": "0.0.1",
+  "description": "A Redux plugin for the Aurelia framework",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "aurelia",
+    "redux"
+  ],
+  "author": "Steven Sojka",
+  "license": "MIT",
+  "devDependencies": {
+    "typescript": "^2.0.3",
+    "typings": "^1.4.0"
+  },
+  "dependencies": {
+    "aurelia-framework": "^1.0.4",
+    "lodash": "^4.16.2"
+  }
+}

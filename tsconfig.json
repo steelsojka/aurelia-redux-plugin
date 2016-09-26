@@ -1,0 +1,16 @@
+{
+  "compilerOptions": {
+    "target": "es2015",
+    "module": "es2015",
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "moduleResolution": "node",
+    "sourceMap": true,
+    "strictNullChecks": true,
+    "allowSyntheticDefaultImports": true
+  },
+  "exclude": [
+    "node_modules",
+    "dist"
+  ]
+}
