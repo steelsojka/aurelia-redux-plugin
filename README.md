@@ -56,7 +56,7 @@ class MyViewModel {
 Using the Dispatch Decorator
 ----------------------------
 
-Using the store directly is easy, but you can make this more declarative by using the `dispath` decorator.
+Using the store directly is easy, but you can make this more declarative by using the `dispatch` decorator.
 
 ```typescript
 import { dispatch } from 'aurelia-redux-plugin';
