@@ -13,6 +13,7 @@ export class Store<S> {
   static _queue: Function[] = [];
 
   private store: Redux.Store<S>;
+  private _changeId: number = 0;
   
   constructor(private bindingEngine: BindingEngine) {
     Store.instance = this;
@@ -26,11 +27,17 @@ export class Store<S> {
     }
   }
 
+  get changeId(): number {
+    return this._changeId;
+  }
+
   provideStore(store: Redux.Store<S>): void {
     this.store = store;
   }
 
   dispatch<T extends Redux.Action>(action: T): T {
+    this._changeId++;
+    
     return this.store.dispatch(action);
   }
 

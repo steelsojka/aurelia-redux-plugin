@@ -2,6 +2,10 @@ import isFunction from 'lodash/isFunction';
 import isString from 'lodash/isString';
 import { Store, ActionCreator } from './Store';
 
+export interface DispatchOptions {
+  creator?: string;
+}
+
 /**
  * Turns a property into an action dispatcher. All arguments passed to the function will get passed
  * to the object creator.
@@ -10,24 +14,32 @@ import { Store, ActionCreator } from './Store';
  * @param {(string|ActionCreator)} actionCreator The action type or an action creator function.
  * @returns {PropertyDecorator}
  */
-export function dispatch(actionCreator: string|ActionCreator): MethodDecorator {
-  return function(target: any, propertyKey: string, descriptor: any): void {
-    const value = descriptor.value;
-    
+export function dispatch(actionCreator: string|ActionCreator, options: DispatchOptions = {}): PropertyDecorator {
+  return function(target: any, propertyKey: string): void {
     if (delete target[propertyKey]) {
       Object.defineProperty(target, propertyKey, {
         enumerable: false,
         configurable: true,
-        value: isFunction(value) ? (...args) => value.call(target, _dispatch, ...args) : _dispatch
+        value: _dispatcher
       });
     }
-    
-    function _dispatch(...args: any[]): void {
-      if (isString(actionCreator)) {
-        Store.instance.dispatch({ type: actionCreator });
-      } else {
-        Store.instance.dispatch((actionCreator as ActionCreator)(...args));
+
+    function _dispatcher<T extends Redux.Action>(...args: any[]): T|Promise<T> {
+      if (isString(options.creator) && isFunction(target[options.creator])) {
+        return target[options.creator].call(target, _dispatch, ...args);
+      } else if (isFunction(options.creator)) {
+        return options.creator(_dispatch, ...args);
       }
+
+      return _dispatch(...args) as T;
+    }
+    
+    function _dispatch<T extends Redux.Action>(...args: any[]): T {
+      if (isString(actionCreator)) {
+        return Store.instance.dispatch({ type: actionCreator } as T);
+      } 
+      
+      return Store.instance.dispatch((actionCreator as ActionCreator)(...args) as T);
     }
   }
 }

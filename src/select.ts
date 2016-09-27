@@ -22,6 +22,8 @@ export interface ReduxSelectConfig {
 export function select<S, T>(selector?: string|Array<string|number>|StoreSelector<S, T>|null, config: ReduxSelectConfig = {}): PropertyDecorator {
   return function(target: any, propertyKey: string): void {
     const handlerName = isString(config.subscribe) ? config.subscribe as string : `${propertyKey}Changed`;
+    let lastValue: T;
+    let lastChangeId: number;
     
     if (!selector) {
       selector = propertyKey;
@@ -43,7 +45,15 @@ export function select<S, T>(selector?: string|Array<string|number>|StoreSelecto
     }
     
     function getter(): T {
-      return Store.instance.select(selector as StoreSelector<S, T>);
+      let value = lastValue;
+      
+      if (Store.instance.changeId !== lastChangeId) {
+        value = Store.instance.select(selector as StoreSelector<S, T>);
+        lastValue = value;
+        lastChangeId = Store.instance.changeId;
+      }
+
+      return value
     }
 
     function observer(...args: any[]): void {

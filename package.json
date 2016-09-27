@@ -2,7 +2,7 @@
   "name": "aurelia-redux-plugin",
   "version": "0.0.2",
   "description": "A Redux plugin for the Aurelia framework",
-  "main": "dist/commonjs/index.js",
+  "main": "dist/commonjs/aurelia-redux-plugin.js",
   "scripts": {
     "clean": "rm -rf dist",
     "prebuild": "npm run clean",
@@ -20,7 +20,7 @@
   ],
   "author": "Steven Sojka",
   "license": "MIT",
-  "typings": "src/index.ts",
+  "typings": "src/aurelia-redux-plugin.ts",
   "devDependencies": {
     "typescript": "^2.0.3",
     "typings": "^1.4.0"

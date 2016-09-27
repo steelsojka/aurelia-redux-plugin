@@ -57,8 +57,9 @@ export class ReduxPropertyObserver<T, S> {
     if (this.subscription) {
       this.subscription();  
       this.subscription = null;
-      this.lastValue = null;
     }
+    
+    this.lastValue = null;
   }
 
   call(): void {
