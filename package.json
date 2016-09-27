@@ -1,6 +1,6 @@
 {
   "name": "aurelia-redux-plugin",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "A Redux plugin for the Aurelia framework",
   "main": "dist/commonjs/index.js",
   "scripts": {
