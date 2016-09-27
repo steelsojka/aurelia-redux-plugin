@@ -2,8 +2,16 @@
   "name": "aurelia-redux-plugin",
   "version": "0.0.1",
   "description": "A Redux plugin for the Aurelia framework",
-  "main": "index.js",
+  "main": "dist/commonjs/index.js",
   "scripts": {
+    "clean": "rm -rf dist",
+    "prebuild": "npm run clean",
+    "build": "npm run build:es2015 && npm run build:commonjs && npm run build:system && npm run build:amd && npm run build:native",
+    "build:es2015": "tsc --module es2015 --target es2015 --outDir dist/es2015",
+    "build:native": "tsc --module es2015 --outDir dist/native-modules",
+    "build:commonjs": "tsc --module commonjs --outDir dist/commonjs",
+    "build:system": "tsc --module system --outDir dist/system",
+    "build:amd": "tsc --module amd --outDir dist/amd",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [
@@ -12,6 +20,7 @@
   ],
   "author": "Steven Sojka",
   "license": "MIT",
+  "typings": "src/index.ts",
   "devDependencies": {
     "typescript": "^2.0.3",
     "typings": "^1.4.0"

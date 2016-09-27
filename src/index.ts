@@ -12,3 +12,7 @@ export function configure<S>(config: any, pluginConfig: { store: Redux.Store<S> 
 }
 
 export * from './Store';
+export * from './select';
+export * from './dispatch';
+export * from './ReduxObservationAdapter';
+export * from './ReduxPropertyObserver';
