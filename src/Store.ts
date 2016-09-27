@@ -92,11 +92,13 @@ export function select<S, T>(selector?: string|Array<string|number>|StoreSelecto
     
     (getter as any).__redux__ = true;
 
-    Object.defineProperty(target, propertyKey, {
-      get: getter,
-      enumerable: true,
-      configurable: true
-    });
+    if (delete target[propertyKey]) {
+      Object.defineProperty(target, propertyKey, {
+        get: getter,
+        enumerable: true,
+        configurable: true
+      });
+    }
     
     // This needs to come after we define the getter to get the correct observer.
     const bindObserver = () => Store.instance.observe(target, propertyKey, observer);
@@ -138,8 +140,8 @@ export function select<S, T>(selector?: string|Array<string|number>|StoreSelecto
  * @returns {PropertyDecorator}
  */
 export function dispatch(actionCreator: string|ActionCreator): PropertyDecorator {
-  return function(target: any, propertyKey: string): void {
-    function dispatcher(...args: any[]): void {
+  return function(target: any, propertyKey: string, descriptor: any): void {
+    function dispatch(...args: any[]): void {
       if (isString(actionCreator)) {
         Store.instance.dispatch({ type: actionCreator });
       } else {
@@ -147,10 +149,14 @@ export function dispatch(actionCreator: string|ActionCreator): PropertyDecorator
       }
     }
     
-    Object.defineProperty(target, propertyKey, {
-      enumerable: false,
-      configurable: true,
-      value: dispatcher
-    });
+    const value = descriptor.value;
+    
+    if (delete target[propertyKey]) {
+      Object.defineProperty(target, propertyKey, {
+        enumerable: false,
+        configurable: true,
+        value: isFunction(value) ? (...args) => value.call(target, dispatch, ...args) : dispatch
+      });
+    }
   }
 }
