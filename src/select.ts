@@ -17,7 +17,40 @@ export interface ReduxSelectConfig {
  *   is used, it will be invoked with the root state. If not value is given then the property name will be used as the path.
  * @param {ReduxSelectConfig} [config={}] A config object to configure behavior.
  * @returns {PropertyDecorator}
-
+ * @example
+ * 
+ * const appState = {
+ *   activeUserId: 5,
+ *   entities: {
+ *     users: {
+ *       5: {} // User data here
+ *     }
+ *   }
+ * };
+ * 
+ * ///////////////////////////
+ * 
+ * // Select can accept a selector functions as well as strings, including selectors using `reselect`.
+ * 
+ * const getActiveUser = state => entities.users[state.activeUserId];
+ * 
+ * class ActiveUser {
+ *   @select(getActiveUser)
+ *   user: User;
+ * } 
+ * 
+ * activeUser.user; // Logs user data
+ * 
+ * // You can also create subscriber callback to be notify when the value has changed.
+ * 
+ * class ActiveUser {
+ *   @select(getActiveUser, { subscribe: true })
+ *   user: User;
+ * 
+ *   userChanged(newValue, oldValue) {
+ *    // Do something here
+ *   }
+ * } 
  */
 export function select<S, T>(selector?: string|Array<string|number>|StoreSelector<S, T>|null, config: ReduxSelectConfig = {}): PropertyDecorator {
   return function(target: any, propertyKey: string): void {
