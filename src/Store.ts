@@ -141,22 +141,22 @@ export function select<S, T>(selector?: string|Array<string|number>|StoreSelecto
  */
 export function dispatch(actionCreator: string|ActionCreator): PropertyDecorator {
   return function(target: any, propertyKey: string, descriptor: any): void {
-    function dispatch(...args: any[]): void {
-      if (isString(actionCreator)) {
-        Store.instance.dispatch({ type: actionCreator });
-      } else {
-        Store.instance.dispatch(actionCreator(...args));
-      }
-    }
-    
     const value = descriptor.value;
     
     if (delete target[propertyKey]) {
       Object.defineProperty(target, propertyKey, {
         enumerable: false,
         configurable: true,
-        value: isFunction(value) ? (...args) => value.call(target, dispatch, ...args) : dispatch
+        value: isFunction(value) ? (...args) => value.call(target, _dispatch, ...args) : _dispatch
       });
+    }
+    
+    function _dispatch(...args: any[]): void {
+      if (isString(actionCreator)) {
+        Store.instance.dispatch({ type: actionCreator });
+      } else {
+        Store.instance.dispatch(actionCreator(...args));
+      }
     }
   }
 }
