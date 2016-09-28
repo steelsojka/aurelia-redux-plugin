@@ -1,11 +1,13 @@
-import { isFunction, isString, get } from 'lodash';
-import { Store, StoreSelector } from './Store';
 import { metadata } from 'aurelia-metadata';
+
+import { isFunction, isString } from './utils';
+import { Store, StoreSelector } from './Store';
 
 export interface ReduxSelectConfig {
   subscribe?: boolean|string;
 }
 
+export const SELECTOR_METADATA_KEY = 'aurelia-redux:selector';
 
 /**
  * Decorates a property that represents derived data from the applications store.
@@ -63,7 +65,11 @@ export function select<S, T>(selector?: string|Array<string|number>|StoreSelecto
       selector = propertyKey;
     }
 
-    metadata.define('redux:selector', true, target, propertyKey);
+    // Flag this property in case the getter gets replace by other decorators.
+    metadata.define(SELECTOR_METADATA_KEY, true, target, propertyKey);
+
+    // Used for a quick check later on when creating an observer.
+    (getter as any).__redux__ = true;
 
     if (delete target[propertyKey]) {
       Object.defineProperty(target, propertyKey, {

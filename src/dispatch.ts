@@ -1,6 +1,4 @@
-import isFunction from 'lodash/isFunction';
-import isString from 'lodash/isString';
-import isObject from 'lodash/isObject';
+import { isObject, isFunction, isString } from './utils';
 import { Store, ActionCreator } from './Store';
 
 export interface DispatchOptions {

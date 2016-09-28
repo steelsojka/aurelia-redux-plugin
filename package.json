@@ -26,7 +26,6 @@
     "typings": "^1.4.0"
   },
   "dependencies": {
-    "aurelia-framework": "^1.0.4",
-    "lodash": "^4.16.2"
+    "aurelia-framework": "^1.0.4"
   }
 }

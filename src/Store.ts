@@ -1,7 +1,6 @@
 import { inject, BindingEngine, Disposable } from 'aurelia-framework';
-import get from 'lodash/get';
-import isString from 'lodash/isString';
-import isObject from 'lodash/isObject';
+
+import { isString, isObject, get } from './utils';
 
 export type PropertyDecorator = (target: any, propertyKey: string) => void;
 export type ActionCreator = <T extends Redux.Action>(...args: any[]) => T;
