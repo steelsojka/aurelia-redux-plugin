@@ -27,6 +27,22 @@ export function configure(aurelia) {
 }
 ```
 
+You can also provide the store during your applications main component lifecycle.
+
+```typescript
+import { inject } from 'aurelia-framework';
+import { Store } from 'aurelia-redux-plugin';
+import { createStore } from 'redux';
+import { rootReducer } from '../reducers';
+
+@inject(Store)
+class MyApp {
+  constructor(store: Store) {
+    store.provideStore(createStore(rootReducer));
+  }
+}
+```
+
 The plugin lets you supply your own store instead of wrapping an api to create it for
 you. Simply create your store and provide it to the plugin. Note, this plugin has no control
 over your reducers or action creators. It is merely an adapter to Aurelia's binding engine and 

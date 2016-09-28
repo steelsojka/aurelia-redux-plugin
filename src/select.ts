@@ -85,6 +85,10 @@ export function select<S, T>(selector?: string|Array<string|number>|StoreSelecto
     }
     
     function getter(): T {
+      if (!Store.instance) {
+        return lastValue;
+      }
+      
       let value = lastValue;
       
       if (Store.instance.changeId !== lastChangeId) {

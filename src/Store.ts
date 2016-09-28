@@ -16,14 +16,6 @@ export class Store<S> {
   
   constructor(private bindingEngine: BindingEngine) {
     Store.instance = this;
-
-    while (Store._queue.length) {
-      const observerHandler = Store._queue.shift();
-
-      if (observerHandler) {
-        observerHandler();
-      }
-    }
   }
 
   get changeId(): number {
@@ -32,6 +24,14 @@ export class Store<S> {
 
   provideStore(store: Redux.Store<S>): void {
     this.store = store;
+    
+    while (Store._queue.length) {
+      const observerHandler = Store._queue.shift();
+
+      if (observerHandler) {
+        observerHandler();
+      }
+    }
   }
 
   dispatch<T extends Redux.Action>(action: T): T {
