@@ -1,4 +1,4 @@
-import { inject, TaskQueue } from 'aurelia-framework';
+import { inject, TaskQueue, metadata } from 'aurelia-framework';
 import { ReduxPropertyObserver } from './ReduxPropertyObserver';
 import { Store } from './Store';
 
@@ -10,7 +10,9 @@ export class ReduxObservationAdapter<S> {
   ) {}
   
   getObserver<T>(object: any, propertyName: string, descriptor: any): ReduxPropertyObserver<T, S>|null {
-    if (descriptor && descriptor.get && descriptor.get.__redux__) {
+    const isReduxSelector = metadata.get('redux:selector', Object.getPrototypeOf(object), propertyName));
+    
+    if (isReduxSelector) {
       return new ReduxPropertyObserver<T, S>(object, propertyName, this.store, this.taskQueue);
     }
 

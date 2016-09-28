@@ -1,5 +1,6 @@
 import { isFunction, isString, get } from 'lodash';
 import { Store, StoreSelector } from './Store';
+import { metadata } from 'aurelia-metadata';
 
 export interface ReduxSelectConfig {
   subscribe?: boolean|string;
@@ -61,8 +62,8 @@ export function select<S, T>(selector?: string|Array<string|number>|StoreSelecto
     if (!selector) {
       selector = propertyKey;
     }
-    
-    (getter as any).__redux__ = true;
+
+    metadata.define('redux:selector', true, target, propertyKey);
 
     if (delete target[propertyKey]) {
       Object.defineProperty(target, propertyKey, {
