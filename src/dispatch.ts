@@ -68,14 +68,10 @@ export function dispatch<T extends Redux.Action>(actionCreator: string|ActionCre
         return options.creator(_dispatch, ...args);
       }
 
-      return _dispatch(...args) as T;
+      return _dispatch(...args);
     }
     
-    function _dispatch(...args: any[]): T|null|Promise<T> {
-      if (!Store.instance) {
-        return null;
-      }
-      
+    function _dispatch(...args: any[]): T|Promise<T> {
       if (isString(actionCreator)) {
         let action = { type: actionCreator };
 
