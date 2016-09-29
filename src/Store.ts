@@ -1,6 +1,7 @@
 import { inject, BindingEngine, Disposable } from 'aurelia-framework';
 
-import { isString, isObject, get } from './utils';
+import {isString, isObject, get, isPromise, isFunction} from './utils';
+import {dispatch} from "./dispatch";
 
 export type PropertyDecorator = (target: any, propertyKey: string) => void;
 export type ActionCreator = <T extends Redux.Action>(...args: any[]) => T;
@@ -36,8 +37,11 @@ export class Store<S> {
 
   dispatch<T extends Redux.Action>(action: T): T {
     this._changeId++;
-    
-    return this.store.dispatch(action);
+    if(isPromise(action))
+      return (<any>action).then(this.dispatch.bind(this));
+    if(isFunction(action))
+      return <any>action(this.dispatch.bind(this));
+    return this.store.dispatch(<any>action);
   }
 
   getState(): S {
