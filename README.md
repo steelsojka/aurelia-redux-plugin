@@ -196,6 +196,7 @@ What's supported
 ----------------
 - Selectors
 - Memoized selectors (Supports selector libraries like `reselect`)
+- Async dispatch and thunks
 - Dispatch shorthand methods
 - Change notification with selectors
 - Aurelia observer adapter for properties decorated with a selector
