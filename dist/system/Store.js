@@ -1,4 +1,4 @@
-System.register(['aurelia-framework', './utils', "./dispatch"], function(exports_1, context_1) {
+System.register(['aurelia-framework', './utils'], function(exports_1, context_1) {
     "use strict";
     var __moduleName = context_1 && context_1.id;
     var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
@@ -10,7 +10,7 @@ System.register(['aurelia-framework', './utils', "./dispatch"], function(exports
     var __metadata = (this && this.__metadata) || function (k, v) {
         if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
     };
-    var aurelia_framework_1, utils_1, dispatch_1;
+    var aurelia_framework_1, utils_1;
     var Store;
     return {
         setters:[
@@ -19,9 +19,6 @@ System.register(['aurelia-framework', './utils', "./dispatch"], function(exports
             },
             function (utils_1_1) {
                 utils_1 = utils_1_1;
-            },
-            function (dispatch_1_1) {
-                dispatch_1 = dispatch_1_1;
             }],
         execute: function() {
             Store = (function () {
@@ -49,7 +46,7 @@ System.register(['aurelia-framework', './utils', "./dispatch"], function(exports
                 Store.prototype.dispatch = function (action) {
                     this._changeId++;
                     if (utils_1.isPromise(action))
-                        return action.then(dispatch_1.dispatch);
+                        return action.then(this.dispatch.bind(this));
                     if (utils_1.isFunction(action))
                         return action(this.dispatch.bind(this));
                     return this.store.dispatch(action);

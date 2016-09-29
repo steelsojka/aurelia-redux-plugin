@@ -10,7 +10,6 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 var aurelia_framework_1 = require('aurelia-framework');
 var utils_1 = require('./utils');
-var dispatch_1 = require("./dispatch");
 var Store = (function () {
     function Store(bindingEngine) {
         this.bindingEngine = bindingEngine;
@@ -36,7 +35,7 @@ var Store = (function () {
     Store.prototype.dispatch = function (action) {
         this._changeId++;
         if (utils_1.isPromise(action))
-            return action.then(dispatch_1.dispatch);
+            return action.then(this.dispatch.bind(this));
         if (utils_1.isFunction(action))
             return action(this.dispatch.bind(this));
         return this.store.dispatch(action);

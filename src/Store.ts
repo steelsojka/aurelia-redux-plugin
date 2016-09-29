@@ -38,7 +38,7 @@ export class Store<S> {
   dispatch<T extends Redux.Action>(action: T): T {
     this._changeId++;
     if(isPromise(action))
-      return (<any>action).then(dispatch);
+      return (<any>action).then(this.dispatch.bind(this));
     if(isFunction(action))
       return <any>action(this.dispatch.bind(this));
     return this.store.dispatch(<any>action);

@@ -9,7 +9,6 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 import { inject, BindingEngine } from 'aurelia-framework';
 import { isString, get, isPromise, isFunction } from './utils';
-import { dispatch } from "./dispatch";
 let Store_1 = class Store {
     constructor(bindingEngine) {
         this.bindingEngine = bindingEngine;
@@ -31,7 +30,7 @@ let Store_1 = class Store {
     dispatch(action) {
         this._changeId++;
         if (isPromise(action))
-            return action.then(dispatch);
+            return action.then(this.dispatch.bind(this));
         if (isFunction(action))
             return action(this.dispatch.bind(this));
         return this.store.dispatch(action);

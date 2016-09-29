@@ -7,7 +7,7 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
-define(["require", "exports", 'aurelia-framework', './utils', "./dispatch"], function (require, exports, aurelia_framework_1, utils_1, dispatch_1) {
+define(["require", "exports", 'aurelia-framework', './utils'], function (require, exports, aurelia_framework_1, utils_1) {
     "use strict";
     var Store = (function () {
         function Store(bindingEngine) {
@@ -34,7 +34,7 @@ define(["require", "exports", 'aurelia-framework', './utils', "./dispatch"], fun
         Store.prototype.dispatch = function (action) {
             this._changeId++;
             if (utils_1.isPromise(action))
-                return action.then(dispatch_1.dispatch);
+                return action.then(this.dispatch.bind(this));
             if (utils_1.isFunction(action))
                 return action(this.dispatch.bind(this));
             return this.store.dispatch(action);
