@@ -6,7 +6,7 @@ export function isFunction(value: any): value is Function {
   return typeof value === 'function';
 }
 
-export function isPromise(value: any): value is Promise{
+export function isPromise(value: any): value is Promise<any>{
   return value && isFinite(value.then);
 }
 
