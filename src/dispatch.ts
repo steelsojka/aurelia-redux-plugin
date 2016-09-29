@@ -51,7 +51,7 @@ export interface DispatchOptions {
  *   }
  * }
  */
-export function dispatch(actionCreator: string|ActionCreator, options: DispatchOptions = {}): PropertyDecorator {
+export function dispatch<T extends Redux.Action>(actionCreator: string|ActionCreator<T>, options: DispatchOptions = {}): PropertyDecorator {
   return function(target: any, propertyKey: string): void {
     if (delete target[propertyKey]) {
       Object.defineProperty(target, propertyKey, {
@@ -61,7 +61,7 @@ export function dispatch(actionCreator: string|ActionCreator, options: DispatchO
       });
     }
 
-    function _dispatcher<T extends Redux.Action>(...args: any[]): T|Promise<T> {
+    function _dispatcher(...args: any[]): T|Promise<T> {
       if (isString(options.creator) && isFunction(target[options.creator])) {
         return target[options.creator].call(target, _dispatch, ...args);
       } else if (isFunction(options.creator)) {
@@ -71,7 +71,7 @@ export function dispatch(actionCreator: string|ActionCreator, options: DispatchO
       return _dispatch(...args) as T;
     }
     
-    function _dispatch<T extends Redux.Action>(...args: any[]): T|null {
+    function _dispatch(...args: any[]): T|null|Promise<T> {
       if (!Store.instance) {
         return null;
       }
@@ -86,7 +86,7 @@ export function dispatch(actionCreator: string|ActionCreator, options: DispatchO
         return Store.instance.dispatch(action as T);
       } 
       
-      return Store.instance.dispatch((actionCreator as ActionCreator)(...args) as T);
+      return Store.instance.dispatch((actionCreator as ActionCreator<T>)(...args) as T);
     }
   }
 }
