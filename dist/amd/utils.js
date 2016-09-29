@@ -9,7 +9,7 @@ define(["require", "exports"], function (require, exports) {
     }
     exports.isFunction = isFunction;
     function isPromise(value) {
-        return value && isFinite(value.then);
+        return value && isFunction(value.then);
     }
     exports.isPromise = isPromise;
     function isObject(value) {

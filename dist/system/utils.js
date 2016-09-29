@@ -10,7 +10,7 @@ System.register([], function(exports_1, context_1) {
     }
     exports_1("isFunction", isFunction);
     function isPromise(value) {
-        return value && isFinite(value.then);
+        return value && isFunction(value.then);
     }
     exports_1("isPromise", isPromise);
     function isObject(value) {

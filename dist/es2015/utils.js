@@ -5,7 +5,7 @@ export function isFunction(value) {
     return typeof value === 'function';
 }
 export function isPromise(value) {
-    return value && isFinite(value.then);
+    return value && isFunction(value.then);
 }
 export function isObject(value) {
     return typeof value === 'object';

@@ -7,7 +7,7 @@ export function isFunction(value: any): value is Function {
 }
 
 export function isPromise(value: any): value is Promise<any>{
-  return value && isFinite(value.then);
+  return value && isFunction(value.then);
 }
 
 export function isObject(value: any): value is Object {
