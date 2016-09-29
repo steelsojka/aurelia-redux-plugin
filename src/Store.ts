@@ -1,11 +1,11 @@
 import { inject, BindingEngine, Disposable } from 'aurelia-framework';
 
-import {isString, isObject, get, isPromise, isFunction} from './utils';
-import {dispatch} from "./dispatch";
+import { isString, isObject, get, isThenable, isFunction } from './utils';
 
-export type PropertyDecorator = (target: any, propertyKey: string) => void;
-export type ActionCreator = <T extends Redux.Action>(...args: any[]) => T;
+export type ActionCreator<T extends Redux.Action> = (...args: any[]) => Dispatchable<T>;
 export type StoreSelector<S, T> = (state: S) => T;
+export type Thunk<T extends Redux.Action> = (dispatch: (action: Dispatchable<T>) => T) => T;
+export type Dispatchable<T extends Redux.Action> = T|Promise<T>|Thunk<T>;
 
 @inject(BindingEngine)
 export class Store<S> {
@@ -35,13 +35,17 @@ export class Store<S> {
     }
   }
 
-  dispatch<T extends Redux.Action>(action: T): T {
+  dispatch<T extends Redux.Action>(action: Dispatchable<T>): T|Promise<T> {
     this._changeId++;
-    if(isPromise(action))
-      return (<any>action).then(this.dispatch.bind(this));
-    if(isFunction(action))
-      return <any>action(this.dispatch.bind(this));
-    return this.store.dispatch(<any>action);
+    
+    if (isThenable<T>(action)) {
+      return action.then(this.dispatch.bind(this));
+    }
+    
+    if (isFunction(action)) {
+      return (<Thunk<T>>action)(this.dispatch.bind(this));
+    }
+    return this.store.dispatch(action);
   }
 
   getState(): S {
