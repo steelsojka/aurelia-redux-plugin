@@ -2,10 +2,15 @@ import { inject, BindingEngine, Disposable } from 'aurelia-framework';
 
 import { isString, isObject, get, isThenable, isFunction } from './utils';
 
-export type ActionCreator<T extends Redux.Action> = (...args: any[]) => Dispatchable<T>;
+export type ActionCreator<T extends Redux.Action, S> = (...args: any[]) => Dispatchable<T, S>;
 export type StoreSelector<S, T> = (state: S) => T;
-export type Thunk<T extends Redux.Action> = (dispatch: (action: Dispatchable<T>) => T) => T;
-export type Dispatchable<T extends Redux.Action> = T|Promise<T>|Thunk<T>;
+export type Thunk<T extends Redux.Action, S> = (dispatch: (action: Dispatchable<T, S>) => T, getState: () => S) => T;
+export type Dispatchable<T extends Redux.Action, S> = T|Promise<T>|Thunk<T, S>;
+
+export interface ReduxPluginConfig<S> {
+  store?: Redux.Store<S>;
+  async?: boolean;
+}
 
 @inject(BindingEngine)
 export class Store<S> {
@@ -15,8 +20,17 @@ export class Store<S> {
   private store: Redux.Store<S>;
   private _changeId: number = 0;
   
-  constructor(private bindingEngine: BindingEngine) {
+  constructor(
+    private bindingEngine: BindingEngine,
+    private config: ReduxPluginConfig<S>
+  ) {
     Store.instance = this;
+
+    this.config = Object.assign({ async: false }, this.config);
+
+    if (this.config.store) {
+      this.provideStore(this.config.store);
+    }
   }
 
   get changeId(): number {
@@ -35,17 +49,20 @@ export class Store<S> {
     }
   }
 
-  dispatch<T extends Redux.Action>(action: Dispatchable<T>): T|Promise<T> {
+  dispatch<T extends Redux.Action>(action: Dispatchable<T, S>): T|Promise<T> {
     this._changeId++;
     
-    if (isThenable<T>(action)) {
-      return action.then(this.dispatch.bind(this));
+    if (this.config.async) {
+      if (isThenable<T>(action)) {
+        return action.then(this.dispatch.bind(this));
+      }
+      
+      if (isFunction(action)) {
+        return (<Thunk<T, S>>action)(this.dispatch.bind(this), this.store.getState.bind(this.store));
+      }
     }
     
-    if (isFunction(action)) {
-      return (<Thunk<T>>action)(this.dispatch.bind(this));
-    }
-    return this.store.dispatch(action);
+    return this.store.dispatch(<T>action);
   }
 
   getState(): S {

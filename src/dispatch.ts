@@ -51,7 +51,7 @@ export interface DispatchOptions {
  *   }
  * }
  */
-export function dispatch<T extends Redux.Action>(actionCreator: string|ActionCreator<T>, options: DispatchOptions = {}): PropertyDecorator {
+export function dispatch<T extends Redux.Action, S>(actionCreator: string|ActionCreator<T, S>, options: DispatchOptions = {}): PropertyDecorator {
   return function(target: any, propertyKey: string): void {
     if (delete target[propertyKey]) {
       Object.defineProperty(target, propertyKey, {
@@ -82,7 +82,7 @@ export function dispatch<T extends Redux.Action>(actionCreator: string|ActionCre
         return Store.instance.dispatch(action as T);
       } 
       
-      return Store.instance.dispatch((actionCreator as ActionCreator<T>)(...args) as T);
+      return Store.instance.dispatch((actionCreator as ActionCreator<T, S>)(...args) as T);
     }
   }
 }

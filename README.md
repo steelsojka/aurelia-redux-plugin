@@ -49,6 +49,14 @@ over your reducers or action creators. It is merely an adapter to Aurelia's bind
 an adapter to your view model and services to select data and dispatch events. How you create/organize your data/reducers/actions is
 up to you.
 
+### Options
+
+- `store: Redux.Store`: An already created store to use.
+- `async: boolean = false`: Whether to enable basic async functionality. This means the dispatch method can handle promises and functions (thunks). 
+  This is disabled by default as it can interfere with other middleware like `redux-thunk` or `redux-promise`. Note, it does not cover all functionality
+  of `redux-thunk`.
+
+
 Using the Store
 ---------------
 

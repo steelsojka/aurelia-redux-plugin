@@ -1,14 +1,12 @@
-import { ObserverLocator } from 'aurelia-framework';
+import { ObserverLocator, Container } from 'aurelia-framework';
 import { ReduxObservationAdapter } from './ReduxObservationAdapter';
-import { Store } from './Store';
+import { Store, ReduxPluginConfig } from './Store';
 
-export function configure<S>(config: any, pluginConfig: { store?: Redux.Store<S> }): void {
-  const container = config.container;
-  const store = container.get(Store);
-  
-  if (pluginConfig.store) {
-    store.provideStore(pluginConfig.store);
-  }
+export function configure<S>(config: any, pluginConfig: ReduxPluginConfig<S>): void {
+  const container = config.container as Container;
+  const store = container.invoke(Store, [config]);
+
+  container.registerInstance(Store, store);
 
   container.get(ObserverLocator).addAdapter(container.get(ReduxObservationAdapter));
 }

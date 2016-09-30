@@ -65,7 +65,7 @@ export function select<S, T>(selector?: string|Array<string|number>|StoreSelecto
       selector = propertyKey;
     }
 
-    // Flag this property in case the getter gets replace by other decorators.
+    // Flag this property in case the getter gets replaced by other decorators.
     metadata.define(SELECTOR_METADATA_KEY, true, target, propertyKey);
 
     // Used for a quick check later on when creating an observer.
