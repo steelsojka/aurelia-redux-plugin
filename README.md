@@ -165,9 +165,7 @@ import { select } from 'aurelia-redux-plugin';
 
 // Assuming state
 const state = {
-  activeUser: {
-    name: 'Sven'
-  },
+  activeUser: 1,
   entities: {
     users: {
       1: { name: 'Joe' },
@@ -187,7 +185,27 @@ class ActiveUser {
 // userNames will return ['Joe', 'Blorg', 'Khan']
 ```
 
-You can also provide an optional subscribe option to be notify when the value has changed.
+You can provide an `invoke` option to use a method on your view model as the selector. This allows you to use local state in your selectors.
+Whether you think that's a good idea is up to you ;)
+
+```typescript
+import { select } from 'aurelia-redux-plugin';
+
+class ActiveUser {
+  userId: number = 1; 
+  
+  @select('getUser', { invoke: true })
+  user: User;
+
+  private getUser(state: any): User {
+    return state.entities[this.userId];
+  }
+}
+
+// activeUser.user will return { name: 'Joe' }
+```
+
+You can also provide an optional subscribe option to be notified when the value has changed.
 
 ```typescript
 class ActiveUser {
@@ -204,7 +222,7 @@ What's supported
 ----------------
 - Selectors
 - Memoized selectors (Supports selector libraries like `reselect`)
-- Async dispatch and thunks
+- Basic async dispatch and thunks (opt-in)
 - Dispatch shorthand methods
 - Change notification with selectors
 - Aurelia observer adapter for properties decorated with a selector

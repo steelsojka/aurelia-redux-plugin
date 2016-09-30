@@ -5,6 +5,7 @@ import { Store, StoreSelector } from './Store';
 
 export interface ReduxSelectConfig {
   subscribe?: boolean|string;
+  invoke?: boolean;
 }
 
 export const SELECTOR_METADATA_KEY = 'aurelia-redux:selector';
@@ -92,7 +93,7 @@ export function select<S, T>(selector?: string|Array<string|number>|StoreSelecto
       let value = lastValue;
       
       if (Store.instance.changeId !== lastChangeId) {
-        value = Store.instance.select(selector as StoreSelector<S, T>);
+        value = Store.instance.select(selector as StoreSelector<S, T>, this, { invoke: config.invoke });
         lastValue = value;
         lastChangeId = Store.instance.changeId;
       }

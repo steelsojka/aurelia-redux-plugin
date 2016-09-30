@@ -81,9 +81,19 @@ export class Store<S> {
     return this.bindingEngine.propertyObserver(target, property).subscribe(handler);
   }
 
-  select<T>(selector: string|string[]|StoreSelector<S, T>): T {
-    if (isString(selector) || Array.isArray(selector)) {
-      return get<T>(Store.instance.getState(), <string>selector);
+  select<T>(selector: string|string[]|StoreSelector<S, T>, instance?: any, options: { invoke?: boolean } = {}): T {
+    if (isString(selector)) {
+      if (options.invoke) {
+        const instanceSelector = get<Function|undefined>(instance, selector);
+
+        if (isFunction(instanceSelector)) {
+          return instanceSelector.call(instance, this.getState());
+        }
+      }
+      
+      return get<T>(this.getState(), <string>selector);
+    } else if (Array.isArray(selector)) {
+      return get<T>(this.getState(), <string[]>selector);
     }
     
     return (<StoreSelector<S, T>>selector)(this.getState());
