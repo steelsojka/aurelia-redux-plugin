@@ -4,7 +4,7 @@ import { Store, ReduxPluginConfig } from './Store';
 
 export function configure<S>(config: any, pluginConfig: ReduxPluginConfig<S>): void {
   const container = config.container as Container;
-  const store = container.invoke(Store, [config]);
+  const store = container.invoke(Store, [pluginConfig]);
 
   container.registerInstance(Store, store);
 
