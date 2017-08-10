@@ -19,6 +19,7 @@ export class Store<S> {
 
   private store: Redux.Store<S>;
   private _changeId: number = 0;
+  private _devToolsConnected: boolean = false;
   
   constructor(
     private bindingEngine: BindingEngine,
@@ -31,10 +32,24 @@ export class Store<S> {
     if (this.config.store) {
       this.provideStore(this.config.store);
     }
+
+    if (window.__REDUX_DEVTOOLS_EXTENSION__) {
+      window.__REDUX_DEVTOOLS_EXTENSION__.listen(({type}: any) => {
+        if (type === 'START') {
+          this._devToolsConnected = true;
+        } else if (type === 'STOP') {
+          this._devToolsConnected = false;
+        }
+      });
+    }
   }
 
   get changeId(): number {
     return this._changeId;
+  }
+
+  get devToolsConnected(): boolean {
+    return this._devToolsConnected;
   }
 
   provideStore(store: Redux.Store<S>): void {
