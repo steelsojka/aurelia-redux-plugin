@@ -92,7 +92,7 @@ export function select<S, T>(selector?: string|Array<string|number>|StoreSelecto
       
       let value = lastValue;
       
-      if (Store.instance.changeId !== lastChangeId) {
+      if (Store.instance.changeId !== lastChangeId || Store.instance.devToolsConnected) {
         value = Store.instance.select(selector as StoreSelector<S, T>, this, { invoke: config.invoke });
         lastValue = value;
         lastChangeId = Store.instance.changeId;
